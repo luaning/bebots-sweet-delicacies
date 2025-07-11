@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catering Order Management System</title>
+    <meta name="description" content="Professional catering order management system with Philippine Peso currency support">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🍽️ Catering Order Management</h1>
+            <nav class="nav">
+                <button class="nav-btn active" onclick="showPage('dashboard')">📊 Dashboard</button>
+                <button class="nav-btn" onclick="showPage('orders')">📋 All Orders</button>
+                <button class="nav-btn" onclick="showPage('pending')">⏳ Pending</button>
+                <button class="nav-btn" onclick="showPage('ready')">✅ Ready</button>
+                <button class="nav-btn" onclick="showPage('completed')">🎉 Completed</button>
+                <button class="nav-btn" onclick="showPage('new-order')">✨ New Order</button>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <!-- Dashboard Page -->
+            <div id="dashboard-page" class="page active">
+                <div class="page-header">
+                    <h2>📊 Dashboard</h2>
+                    <p class="page-description">Welcome to your catering management system</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <h3 id="total-orders">0</h3>
+                            <p>Total Orders</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏳</div>
+                        <div class="stat-info">
+                            <h3 id="pending-orders">0</h3>
+                            <p>Pending Orders</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">✅</div>
+                        <div class="stat-info">
+                            <h3 id="ready-orders">0</h3>
+                            <p>Ready Orders</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3 id="total-revenue">₱0.00</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recent-orders">
+                    <h3>Recent Orders</h3>
+                    <div id="recent-orders-list" class="orders-list"></div>
+                </div>
+            </div>
+
+            <!-- All Orders Page -->
+            <div id="orders-page" class="page">
+                <div class="page-header">
+                    <h2>📋 All Orders</h2>
+                    <button class="btn btn-primary" onclick="showPage('new-order')">+ New Order</button>
+                </div>
+                
+                <div class="search-section">
+                    <input type="text" id="search-input" placeholder="Search by customer name, phone, or order ID..." oninput="searchOrders()">
+                </div>
+
+                <div id="orders-list" class="orders-grid"></div>
+            </div>
+
+            <!-- Pending Orders Page -->
+            <div id="pending-page" class="page">
+                <div class="page-header">
+                    <h2>⏳ Pending Orders</h2>
+                    <p class="page-description">Orders waiting for confirmation</p>
+                </div>
+                <div id="pending-list" class="orders-grid"></div>
+            </div>
+
+            <!-- Ready Orders Page -->
+            <div id="ready-page" class="page">
+                <div class="page-header">
+                    <h2>✅ Ready Orders</h2>
+                    <p class="page-description">Orders ready for pickup or delivery</p>
+                </div>
+                <div id="ready-list" class="orders-grid"></div>
+            </div>
+
+            <!-- Completed Orders Page -->
+            <div id="completed-page" class="page">
+                <div class="page-header">
+                    <h2>🎉 Completed Orders</h2>
+                    <p class="page-description">Successfully completed orders</p>
+                </div>
+                <div id="completed-list" class="orders-grid"></div>
+            </div>
+
+            <!-- New Order Page -->
+            <div id="new-order-page" class="page">
+                <div class="page-header">
+                    <button class="btn btn-secondary" onclick="showPage('orders')">← Back to Orders</button>
+                    <h2>Create New Order</h2>
+                </div>
+
+                <div class="form-container">
+                    <form id="order-form" onsubmit="createOrder(event)">
+                        <!-- Customer Information -->
+                        <div class="form-section">
+                            <h3>Customer Information</h3>
+                            <div class="form-group">
+                                <label for="customer-name">Full Name</label>
+                                <input type="text" id="customer-name" placeholder="Juan Dela Cruz" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="customer-phone">Phone Number (Optional)</label>
+                                <input type="tel" id="customer-phone" placeholder="09123456789" onchange="checkExistingCustomer()">
+                            </div>
+
+                            <div id="existing-customer" class="customer-card" style="display: none;">
+                                <div class="customer-info">
+                                    <h4 id="existing-customer-name"></h4>
+                                    <p id="existing-customer-details"></p>
+                                </div>
+                                <button type="button" class="btn btn-success" onclick="useExistingCustomer()">Use This Customer</button>
+                            </div>
+                        </div>
+
+                        <!-- Order Details -->
+                        <div class="form-section">
+                            <h3>Order Details</h3>
+                            <div class="form-group">
+                                <label for="order-type">Order Type</label>
+                                <select id="order-type" onchange="toggleDeliveryAddress()">
+                                    <option value="pickup">Pickup</option>
+                                    <option value="delivery">Delivery</option>
+                                </select>
+                            </div>
+
+                            <div id="delivery-address-group" class="form-group" style="display: none;">
+                                <label for="delivery-address">Delivery Address</label>
+                                <textarea id="delivery-address" placeholder="Enter delivery address..."></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="pickup-delivery-date">Pickup/Delivery Date & Time</label>
+                                <input type="datetime-local" id="pickup-delivery-date" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Order Items</label>
+                                <div id="order-items">
+                                    <div class="item-row">
+                                        <input type="text" placeholder="Item name" class="item-name" required>
+                                        <input type="number" placeholder="Qty" min="1" value="1" class="item-quantity">
+                                        <input type="number" placeholder="Price (₱)" min="0" step="0.01" class="item-price">
+                                        <button type="button" class="btn btn-danger" onclick="removeItem(this)" style="display: none;">×</button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-secondary" onclick="addItem()">+ Add Item</button>
+                            </div>
+
+                            <div class="total-section">
+                                <strong>Total: ₱<span id="order-total">0.00</span></strong>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="order-notes">Notes (Optional)</label>
+                                <textarea id="order-notes" placeholder="Special instructions..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-large">Create Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Order Details Modal -->
+        <div id="order-modal" class="modal" onclick="closeModal()">
+            <div class="modal-content" onclick="event.stopPropagation()">
+                <div class="modal-header">
+                    <h3 id="modal-title">Order Details</h3>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div id="order-details-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
