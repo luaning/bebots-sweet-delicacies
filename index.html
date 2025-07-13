@@ -3,208 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catering Order Management System</title>
-    <meta name="description" content="Professional catering order management system with Philippine Peso currency support">
-    <link rel="stylesheet" href="styles.css">
+    <title>Study Reviewer - Contemporary Arts</title>
+    <link rel="stylesheet" href="styles1.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <h1>🍽️ Catering Order Management</h1>
-            <nav class="nav">
-                <button class="nav-btn active" onclick="showPage('dashboard')">📊 Dashboard</button>
-                <button class="nav-btn" onclick="showPage('orders')">📋 All Orders</button>
-                <button class="nav-btn" onclick="showPage('pending')">⏳ Pending</button>
-                <button class="nav-btn" onclick="showPage('ready')">✅ Ready</button>
-                <button class="nav-btn" onclick="showPage('completed')">🎉 Completed</button>
-                <button class="nav-btn" onclick="showPage('new-order')">✨ New Order</button>
-            </nav>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h1>Study Reviewer</h1>
+                <p>Enter your password to access your study materials</p>
+            </div>
+            
+            <form id="loginForm" class="login-form">
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Enter your password" required>
+                    </div>
+                </div>
+                
+                <div id="errorMessage" class="error-message hidden"></div>
+                
+                <button type="submit" class="login-btn">
+                    <span id="loginText">Sign In</span>
+                    <span id="loginLoader" class="loader hidden"></span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="app-logo">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="app-title">
+                        <h1>Study Reviewer</h1>
+                        <p>Your personal learning companion</p>
+                    </div>
+                </div>
+                
+                <div class="header-right">
+                    <button id="searchBtn" class="header-btn">
+                        <i class="fas fa-search"></i>
+                        Search Lessons
+                    </button>
+                    <button id="logoutBtn" class="header-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <main class="main-content">
-            <!-- Dashboard Page -->
-            <div id="dashboard-page" class="page active">
-                <div class="page-header">
-                    <h2>📊 Dashboard</h2>
-                    <p class="page-description">Welcome to your catering management system</p>
-                </div>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">📋</div>
-                        <div class="stat-info">
-                            <h3 id="total-orders">0</h3>
-                            <p>Total Orders</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">⏳</div>
-                        <div class="stat-info">
-                            <h3 id="pending-orders">0</h3>
-                            <p>Pending Orders</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">✅</div>
-                        <div class="stat-info">
-                            <h3 id="ready-orders">0</h3>
-                            <p>Ready Orders</p>
-                        </div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-icon">💰</div>
-                        <div class="stat-info">
-                            <h3 id="total-revenue">₱0.00</h3>
-                            <p>Total Revenue</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="recent-orders">
-                    <h3>Recent Orders</h3>
-                    <div id="recent-orders-list" class="orders-list"></div>
-                </div>
-            </div>
-
-            <!-- All Orders Page -->
-            <div id="orders-page" class="page">
-                <div class="page-header">
-                    <h2>📋 All Orders</h2>
-                    <button class="btn btn-primary" onclick="showPage('new-order')">+ New Order</button>
-                </div>
-                
-                <div class="search-section">
-                    <input type="text" id="search-input" placeholder="Search by customer name, phone, or order ID..." oninput="searchOrders()">
-                </div>
-
-                <div id="orders-list" class="orders-grid"></div>
-            </div>
-
-            <!-- Pending Orders Page -->
-            <div id="pending-page" class="page">
-                <div class="page-header">
-                    <h2>⏳ Pending Orders</h2>
-                    <p class="page-description">Orders waiting for confirmation</p>
-                </div>
-                <div id="pending-list" class="orders-grid"></div>
-            </div>
-
-            <!-- Ready Orders Page -->
-            <div id="ready-page" class="page">
-                <div class="page-header">
-                    <h2>✅ Ready Orders</h2>
-                    <p class="page-description">Orders ready for pickup or delivery</p>
-                </div>
-                <div id="ready-list" class="orders-grid"></div>
-            </div>
-
-            <!-- Completed Orders Page -->
-            <div id="completed-page" class="page">
-                <div class="page-header">
-                    <h2>🎉 Completed Orders</h2>
-                    <p class="page-description">Successfully completed orders</p>
-                </div>
-                <div id="completed-list" class="orders-grid"></div>
-            </div>
-
-            <!-- New Order Page -->
-            <div id="new-order-page" class="page">
-                <div class="page-header">
-                    <button class="btn btn-secondary" onclick="showPage('orders')">← Back to Orders</button>
-                    <h2>Create New Order</h2>
-                </div>
-
-                <div class="form-container">
-                    <form id="order-form" onsubmit="createOrder(event)">
-                        <!-- Customer Information -->
-                        <div class="form-section">
-                            <h3>Customer Information</h3>
-                            <div class="form-group">
-                                <label for="customer-name">Full Name</label>
-                                <input type="text" id="customer-name" placeholder="Juan Dela Cruz" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="customer-phone">Phone Number (Optional)</label>
-                                <input type="tel" id="customer-phone" placeholder="09123456789" onchange="checkExistingCustomer()">
-                            </div>
-
-                            <div id="existing-customer" class="customer-card" style="display: none;">
-                                <div class="customer-info">
-                                    <h4 id="existing-customer-name"></h4>
-                                    <p id="existing-customer-details"></p>
-                                </div>
-                                <button type="button" class="btn btn-success" onclick="useExistingCustomer()">Use This Customer</button>
-                            </div>
+        <!-- Dashboard -->
+        <div id="dashboard" class="dashboard">
+            <div class="container">
+                <div class="dashboard-grid">
+                    <!-- Main Content -->
+                    <div class="main-content">
+                        <div class="welcome-section">
+                            <h2>Welcome back! 🌸</h2>
+                            <p>Ready to continue your learning journey?</p>
                         </div>
 
-                        <!-- Order Details -->
-                        <div class="form-section">
-                            <h3>Order Details</h3>
-                            <div class="form-group">
-                                <label for="order-type">Order Type</label>
-                                <select id="order-type" onchange="toggleDeliveryAddress()">
-                                    <option value="pickup">Pickup</option>
-                                    <option value="delivery">Delivery</option>
-                                </select>
-                            </div>
-
-                            <div id="delivery-address-group" class="form-group" style="display: none;">
-                                <label for="delivery-address">Delivery Address</label>
-                                <textarea id="delivery-address" placeholder="Enter delivery address..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="pickup-delivery-date">Pickup/Delivery Date & Time</label>
-                                <input type="datetime-local" id="pickup-delivery-date" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Order Items</label>
-                                <div id="order-items">
-                                    <div class="item-row">
-                                        <input type="text" placeholder="Item name" class="item-name" required>
-                                        <input type="number" placeholder="Qty" min="1" value="1" class="item-quantity">
-                                        <input type="number" placeholder="Price (₱)" min="0" step="0.01" class="item-price">
-                                        <button type="button" class="btn btn-danger" onclick="removeItem(this)" style="display: none;">×</button>
+                        <!-- Subject Card -->
+                        <div class="subjects-section">
+                            <h3>Available Subjects</h3>
+                            <div class="subject-grid">
+                                <div class="subject-card" onclick="openSubject('contemporary-arts')">
+                                    <div class="subject-header">
+                                        <div class="subject-info">
+                                            <div class="subject-icon">
+                                                <i class="fas fa-palette"></i>
+                                            </div>
+                                            <div>
+                                                <h4>Contemporary Arts</h4>
+                                                <p>4 lessons</p>
+                                            </div>
+                                        </div>
+                                        <div class="subject-progress-badge">
+                                            <span id="subjectProgress">0/4</span>
+                                        </div>
+                                    </div>
+                                    <div class="subject-description">
+                                        <p>Study of contemporary art forms, Philippine culture, and artistic expressions</p>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div id="subjectProgressBar" class="progress-fill" style="width: 0%;"></div>
                                     </div>
                                 </div>
-                                <button type="button" class="btn btn-secondary" onclick="addItem()">+ Add Item</button>
                             </div>
-
-                            <div class="total-section">
-                                <strong>Total: ₱<span id="order-total">0.00</span></strong>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="order-notes">Notes (Optional)</label>
-                                <textarea id="order-notes" placeholder="Special instructions..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary btn-large">Create Order</button>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </main>
+                    </div>
 
-        <!-- Order Details Modal -->
-        <div id="order-modal" class="modal" onclick="closeModal()">
-            <div class="modal-content" onclick="event.stopPropagation()">
-                <div class="modal-header">
-                    <h3 id="modal-title">Order Details</h3>
-                    <span class="close" onclick="closeModal()">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div id="order-details-content"></div>
+                    <!-- Sidebar -->
+                    <div class="sidebar">
+                        <div class="sidebar-card">
+                            <h4><i class="fas fa-award"></i> Overall Progress</h4>
+                            <div class="progress-tracker">
+                                <div class="progress-bar">
+                                    <div id="overallProgressBar" class="progress-fill" style="width: 0%;"></div>
+                                </div>
+                                <div class="progress-text">
+                                    <span id="overallProgress">0/4 lessons completed</span>
+                                    <span id="overallPercentage">0%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-card">
+                            <h4>💡 Study Tips</h4>
+                            <div class="tips">
+                                <p><strong>Take breaks:</strong> Use the 25-5 minute technique for better retention.</p>
+                                <p><strong>Active recall:</strong> Test yourself after reading each lesson.</p>
+                                <p><strong>Use search:</strong> Quickly find specific topics across all lessons.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Toast Notification -->
-        <div id="toast" class="toast"></div>
+        <!-- Subject View -->
+        <div id="subjectView" class="subject-view hidden">
+            <div class="container">
+                <div class="subject-header-nav">
+                    <button id="backToDashboard" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Dashboard
+                    </button>
+                    <div class="subject-title">
+                        <div class="subject-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h1>Contemporary Arts</h1>
+                    </div>
+                </div>
+
+                <div class="subject-grid">
+                    <div class="lessons-content">
+                        <div class="subject-overview">
+                            <h2>Contemporary Arts</h2>
+                            <p>Study of contemporary art forms, Philippine culture, and artistic expressions</p>
+                        </div>
+
+                        <div class="lessons-grid">
+                            <h3>Lessons</h3>
+                            <div class="lesson-cards">
+                                <div class="lesson-card" onclick="openLesson('lesson-1')">
+                                    <div class="lesson-header">
+                                        <div class="lesson-status">
+                                            <i id="lesson1Status" class="fas fa-circle lesson-incomplete"></i>
+                                        </div>
+                                        <div class="lesson-info">
+                                            <h4>Humanities and Contemporary Art</h4>
+                                            <p>Lesson 1</p>
+                                        </div>
+                                        <div class="lesson-badge">
+                                            <span id="lesson1Badge">Start</span>
+                                        </div>
+                                    </div>
+                                    <p class="lesson-preview">Study of human experience through philosophy, history, literature, art, music...</p>
+                                </div>
+
+                                <div class="lesson-card" onclick="openLesson('lesson-2')">
+                                    <div class="lesson-header">
+                                        <div class="lesson-status">
+                                            <i id="lesson2Status" class="fas fa-circle lesson-incomplete"></i>
+                                        </div>
+                                        <div class="lesson-info">
+                                            <h4>Traditional Filipino Arts and Crafts</h4>
+                                            <p>Lesson 2</p>
+                                        </div>
+                                        <div class="lesson-badge">
+                                            <span id="lesson2Badge">Start</span>
+                                        </div>
+                                    </div>
+                                    <p class="lesson-preview">T'nalak weaving tradition, Papier-mâché, Bulul, and other Filipino crafts...</p>
+                                </div>
+
+                                <div class="lesson-card" onclick="openLesson('lesson-3')">
+                                    <div class="lesson-header">
+                                        <div class="lesson-status">
+                                            <i id="lesson3Status" class="fas fa-circle lesson-incomplete"></i>
+                                        </div>
+                                        <div class="lesson-info">
+                                            <h4>Philippine Festivals and Fiestas</h4>
+                                            <p>Lesson 3</p>
+                                        </div>
+                                        <div class="lesson-badge">
+                                            <span id="lesson3Badge">Start</span>
+                                        </div>
+                                    </div>
+                                    <p class="lesson-preview">Ati-Atihan, Sinulog, Dinagyang, and other Philippine festivals...</p>
+                                </div>
+
+                                <div class="lesson-card" onclick="openLesson('lesson-4')">
+                                    <div class="lesson-header">
+                                        <div class="lesson-status">
+                                            <i id="lesson4Status" class="fas fa-circle lesson-incomplete"></i>
+                                        </div>
+                                        <div class="lesson-info">
+                                            <h4>Integrated Art Applications</h4>
+                                            <p>Lesson 4</p>
+                                        </div>
+                                        <div class="lesson-badge">
+                                            <span id="lesson4Badge">Start</span>
+                                        </div>
+                                    </div>
+                                    <p class="lesson-preview">Architecture, visual arts, music, literary art, dance, and cinema...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject-sidebar">
+                        <div class="sidebar-card">
+                            <h4><i class="fas fa-book"></i> Subject Details</h4>
+                            <div class="subject-details">
+                                <h5>What you'll learn:</h5>
+                                <ul>
+                                    <li>Contemporary art forms and movements</li>
+                                    <li>Philippine cultural heritage</li>
+                                    <li>Traditional crafts and festivals</li>
+                                    <li>Integrated art applications</li>
+                                </ul>
+                                <div class="time-estimate">
+                                    <span>Estimated time: 2-3 hours</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson View -->
+        <div id="lessonView" class="lesson-view hidden">
+            <div class="container">
+                <div class="lesson-header-nav">
+                    <button id="backToSubject" class="back-btn">
+                        <i class="fas fa-arrow-left"></i>
+                        Back to Contemporary Arts
+                    </button>
+                    <div class="lesson-title">
+                        <div class="lesson-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div>
+                            <h1 id="lessonTitle">Lesson Title</h1>
+                            <p id="lessonNumber">Lesson 1 of 4</p>
+                        </div>
+                    </div>
+                    <div class="lesson-actions">
+                        <button id="markCompleteBtn" class="complete-btn">
+                            <i class="fas fa-check-circle"></i>
+                            Mark as Complete
+                        </button>
+                    </div>
+                </div>
+
+                <div class="lesson-grid">
+                    <div class="lesson-content">
+                        <div class="lesson-card">
+                            <div id="lessonContentArea" class="lesson-text">
+                                <!-- Lesson content will be loaded here -->
+                            </div>
+                        </div>
+
+                        <div class="lesson-navigation">
+                            <button id="prevLessonBtn" class="nav-btn hidden">
+                                <i class="fas fa-arrow-left"></i>
+                                Previous Lesson
+                            </button>
+                            <button id="nextLessonBtn" class="nav-btn hidden">
+                                Next Lesson
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="lesson-sidebar">
+                        <div class="sidebar-card">
+                            <h4>Lesson Progress</h4>
+                            <div class="lesson-progress-info">
+                                <div class="progress-item">
+                                    <span>Status</span>
+                                    <span id="lessonStatusText" class="status-badge">In Progress</span>
+                                </div>
+                                <div class="progress-item">
+                                    <span>Sections</span>
+                                    <span id="lessonSections">0</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-card">
+                            <h4>💡 Study Tips</h4>
+                            <div class="tips">
+                                <p><strong>Highlight key terms:</strong> Focus on definitions and important concepts.</p>
+                                <p><strong>Take notes:</strong> Write down main points to help retention.</p>
+                                <p><strong>Review regularly:</strong> Come back to completed lessons for revision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Modal -->
+        <div id="searchModal" class="search-modal hidden">
+            <div class="search-modal-content">
+                <div class="search-header">
+                    <h3>Search Lessons</h3>
+                    <button id="closeSearchModal" class="close-btn">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <div class="search-input-container">
+                    <div class="search-input-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search for topics, definitions, or content...">
+                    </div>
+                </div>
+                
+                <div id="searchResults" class="search-results">
+                    <div class="search-placeholder">
+                        <i class="fas fa-search"></i>
+                        <p>Start typing to search through all lessons...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script1.js"></script>
 </body>
 </html>
